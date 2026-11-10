@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CodePath is a focused, practical way to learn Python." />
+    <title>CodePath — Learn with intention</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Automatically redirect to Vite dev server (port 5173) if opened via VS Code Live Server (port 5500)
+      if (window.location.port === '5500') {
+        window.location.replace('http://127.0.0.1:5173/' + window.location.hash);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <div style="display:flex;min-height:100vh;align-items:center;justify-content:center;font-family:system-ui,sans-serif;background:#f8f8f6;color:#18212f;padding:20px;text-align:center;">
+        <div style="max-width:480px;padding:32px;background:#ffffff;border-radius:18px;box-shadow:0 18px 48px rgba(22,31,47,0.08);border:1px solid #e2e6e8;">
+          <h2 style="margin:0 0 12px;color:#6654d9;font-size:24px;">CodePath</h2>
+          <p style="margin:0 0 20px;color:#697487;font-size:14px;line-height:1.6;">
+            Faqja po ngarkohet... Nëse je në portën 5500 (Live Server), kliko butonin më poshtë për të kaluar te serveri zyrtar i projektit (Vite):
+          </p>
+          <a href="http://127.0.0.1:5173/" style="display:inline-block;padding:12px 24px;background:#6654d9;color:#ffffff;text-decoration:none;border-radius:10px;font-weight:600;font-size:14px;">
+            Hap CodePath në Portën 5173 →
+          </a>
+        </div>
+      </div>
+    </div>
+    <noscript>CodePath needs JavaScript enabled to load the learning experience.</noscript>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "codepath",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "check": "node --check src/main.js && node --check src/ui/render.js && node --check src/ui/chapter-flow.js && node --check src/ui/ai-tutor.js && node --check src/ui/python-lab.js && node --check src/ui/workshop.js && node --check src/ui/auth.js && node --check src/ui/dashboard.js && node --check src/ui/admin.js && node --check src/editor/python-editor.js && node --check src/services/python-runtime.js && node --check src/services/workshop-engine.js && node --check src/services/supabase.js && node --check src/services/auth.js && node --check src/services/achievements.js && node --check src/workers/pyodide.worker.js && node --check src/data/curriculum.js && node --check src/data/chapter-flows.js && node --check src/data/curriculum/learning-schema.js && node --check src/data/curriculum/chapter-one.js && node --check src/data/curriculum/chapter-two.js && node --check src/data/curriculum/chapter-three.js && node --check src/data/curriculum/chapter-four.js && node --check src/data/curriculum/chapter-five.js && node --check src/data/curriculum/chapter-six.js && node --check src/data/curriculum/chapter-seven.js && node --check src/data/curriculum/lesson-builder.js && node --check src/data/curriculum/lesson-unit.js && node --check src/data/curriculum/legacy-activities.js && node --check src/data/curriculum/beginner-lessons.js && node --check src/data/curriculum/control-data-lessons.js && node --check src/data/curriculum/functions-oop-lessons.js && node --check src/data/curriculum/reliable-lessons.js && node --check src/data/curriculum/advanced-lessons.js && node --check src/data/workshops/email-simulator.js && node --check src/data/workshops/index.js && node --check src/state/store.js && node --check server/tutor-handler.js && node --check server/providers/gemini.js && node --check server/providers/index.js && node --check api/tutor.js && node --check vite.config.js"
+  },
+  "dependencies": {
+    "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "codemirror": "^6.0.2"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5"
+  }
+}
