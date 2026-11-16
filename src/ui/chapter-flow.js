@@ -4,6 +4,7 @@ import { buildWorkshopTestProgram, parseWorkshopResults, summarizeWorkshopResult
 import { progressStore } from '../state/store.js';
 import { mountAiTutor, unmountAiTutor } from './ai-tutor.js';
 import { chapterFlows } from '../data/chapter-flows.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 const app = document.querySelector('#app');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -18,7 +19,7 @@ const localize = (chapter, english, albanian) => chapter.learningVersion === 2 ?
 export function unmountChapterFlow() { activeRun += 1; editor?.destroy(); editor = null; unmountAiTutor(); }
 
 function header() {
-  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">&lt;/&gt;</span>CodePath</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Courses</a><a href="#/learn/python-fundamentals">Learning path</a><a href="#/workshop/email-simulator">Email Simulator</a></nav><div class="nav-actions"><button class="button button-quiet theme-toggle" type="button" data-theme-toggle>◐ Theme</button></div></div></header>`;
+  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">${logoMark()}</span>${brandNameMarkup()}</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Courses</a><a href="#/learn/python-fundamentals">Learning path</a><a href="#/workshop/email-simulator">Email Simulator</a></nav></div></header>`;
 }
 
 function renderLiterature(chapter, state) {

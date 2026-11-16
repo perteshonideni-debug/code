@@ -8,6 +8,8 @@ import { renderLogin, renderResetPassword, renderSignUp } from './ui/auth.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { renderAdmin } from './ui/admin.js';
 import { authService } from './services/auth.js';
+import { initCursor } from './ui/cursor.js';
+import { initHeaderGlass, syncHeaderGlass } from './ui/header.js';
 
 function route() {
   const hash = location.hash || '#/';
@@ -44,5 +46,12 @@ function route() {
   return renderHome();
 }
 
-window.addEventListener('hashchange', route);
+initCursor();
+initHeaderGlass();
+window.addEventListener('hashchange', () => {
+  route();
+  // The header is rebuilt per route, so re-apply the scrolled state to it.
+  syncHeaderGlass();
+});
 route();
+syncHeaderGlass();

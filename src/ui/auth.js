@@ -1,11 +1,13 @@
 import { authService } from '../services/auth.js';
 import { isSupabaseConfigured } from '../services/supabase.js';
+import { icon } from './icons.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 const app = document.querySelector('#app');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
 
 function authHeader() {
-  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">&lt;/&gt;</span>CodePath</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Kurset</a><a href="#/learn/python-fundamentals">Mësimet</a><a href="#/workshop/email-simulator">Email Simulator</a></nav><div class="nav-actions"><button class="button button-quiet theme-toggle" type="button" data-theme-toggle>◐ Theme</button><a class="button button-secondary" href="#/">Kthehu</a></div></div></header>`;
+  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">${logoMark()}</span>${brandNameMarkup()}</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Kurset</a><a href="#/learn/python-fundamentals">Mësimet</a><a href="#/workshop/email-simulator">Email Simulator</a></nav><div class="nav-actions"><a class="button button-secondary" href="#/">Kthehu</a></div></div></header>`;
 }
 
 function authFooter() {
@@ -119,7 +121,7 @@ export function renderSignUp() {
 
         ${!isConfigured ? `
           <div class="auth-notice">
-            <span class="notice-icon">💡</span>
+            <span class="notice-icon">${icon('lightbulb', { size: 'sm' })}</span>
             <div>
               <strong>Regjistrim i Menjëhershëm</strong>
               <p>Llogaria jote krijohet menjëherë me ruajtje lokale dhe sinkronizim të plotë.</p>

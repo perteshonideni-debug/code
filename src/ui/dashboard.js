@@ -3,6 +3,8 @@ import { evaluateAchievements } from '../services/achievements.js';
 import { progressStore } from '../state/store.js';
 import { curriculum } from '../data/curriculum.js';
 import { chapterFlows } from '../data/chapter-flows.js';
+import { icon } from './icons.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 const app = document.querySelector('#app');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -12,7 +14,7 @@ function dashboardHeader(user, streak, xp) {
     <header class="site-header">
       <div class="container nav">
         <a class="brand" href="#/">
-          <span class="brand-mark">&lt;/&gt;</span>CodePath
+          <span class="brand-mark">${logoMark()}</span>${brandNameMarkup()}
         </a>
         <nav class="nav-links" aria-label="Primary">
           <a href="#/dashboard" class="active">Paneli Im</a>
@@ -23,11 +25,10 @@ function dashboardHeader(user, streak, xp) {
         </nav>
         <div class="nav-actions">
           <div class="user-stats-pill" title="Seria e ditëve dhe pikët XP">
-            <span class="stat-pill-item">🔥 <b>${streak}</b> ditë</span>
-            <span class="stat-pill-divider">·</span>
-            <span class="stat-pill-item">⚡ <b>${xp}</b> XP</span>
+            <span class="stat-pill-item" aria-label="Seria: ${streak} ditë">${icon('flame', { size: 'sm' })}<b class="stat-pill-count">${streak}</b> ditë</span>
+            <span class="stat-pill-divider" aria-hidden="true"></span>
+            <span class="stat-pill-item" aria-label="Pikët XP: ${xp}">${icon('zap', { size: 'sm' })}<b class="stat-pill-count">${xp}</b> XP</span>
           </div>
-          <button class="button button-quiet theme-toggle" type="button" data-theme-toggle>◐ Theme</button>
           <button class="button button-secondary" type="button" id="dash-logout-btn">Dil</button>
         </div>
       </div>
@@ -81,12 +82,12 @@ export function renderDashboard() {
         <section class="dash-hero">
           <div class="dash-hero-content">
             <span class="eyebrow">${user.role === 'admin' ? 'Paneli i Administratorit & Nxënësit' : 'Hapësira e Nxënësit'}</span>
-            <h1>Përshëndetje, ${esc(user.fullName)} 👋</h1>
+            <h1>Përshëndetje, ${esc(user.fullName)}</h1>
             <p class="dash-hero-sub">Mirësevjen përsëri në qendrën tënde të mësimit. Çdo rresht kodi që shkruan të afron më pranë qëllimit.</p>
           </div>
           <div class="dash-hero-action">
             <a href="#/chapter/${recommended.chapterId}" class="button button-primary button-large">
-              ▶ Vazhdo Mësimin: ${esc(recommended.chapterTitle)}
+              Vazhdo mësimin: ${esc(recommended.chapterTitle)} ${icon('arrowRight', { size: 'sm' })}
             </a>
           </div>
         </section>
@@ -94,7 +95,7 @@ export function renderDashboard() {
         <!-- Stat Cards Grid -->
         <section class="dash-stats-grid">
           <div class="dash-stat-card">
-            <div class="stat-card-icon">🔥</div>
+            <div class="stat-card-icon">${icon('flame')}</div>
             <div class="stat-card-info">
               <span class="stat-label">Seria e Mësimit</span>
               <strong class="stat-value">${stats.streak} ditë</strong>
@@ -103,7 +104,7 @@ export function renderDashboard() {
           </div>
 
           <div class="dash-stat-card">
-            <div class="stat-card-icon">⚡</div>
+            <div class="stat-card-icon">${icon('zap')}</div>
             <div class="stat-card-info">
               <span class="stat-label">Pikët Totale XP</span>
               <strong class="stat-value">${stats.totalXp} XP</strong>
@@ -115,7 +116,7 @@ export function renderDashboard() {
           </div>
 
           <div class="dash-stat-card">
-            <div class="stat-card-icon">📚</div>
+            <div class="stat-card-icon">${icon('book')}</div>
             <div class="stat-card-info">
               <span class="stat-label">Mësime të Përfunduara</span>
               <strong class="stat-value">${completedLessons} / ${totalLessons}</strong>
@@ -189,7 +190,7 @@ export function renderDashboard() {
                     Hap Workshop-in (12 Hapa) →
                   </a>
                 </div>
-                <div class="dash-promo-badge">📧</div>
+                <div class="dash-promo-badge">${icon('mail')}</div>
               </div>
             </section>
 

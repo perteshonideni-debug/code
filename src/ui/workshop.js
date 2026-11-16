@@ -3,6 +3,7 @@ import { createPythonEditor, resetDraft } from '../editor/python-editor.js';
 import { pythonRuntime } from '../services/python-runtime.js';
 import { buildWorkshopTestProgram, parseWorkshopResults, summarizeWorkshopResults } from '../services/workshop-engine.js';
 import { progressStore } from '../state/store.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 let editor = null;
 const app = document.querySelector('#app');
@@ -73,7 +74,7 @@ export function renderWorkshop(workshop = emailSimulator) {
     document.querySelector('[data-workshop-step-title]').textContent = currentStep().title;
     document.querySelector('[data-workshop-panel="instructions"]').click();
   };
-  app.innerHTML = `<main class="workshop-page"><header class="workshop-topbar"><a href="#/" class="workshop-brand"><span>&lt;/&gt;</span> CodePath</a><a href="#/learn/python-fundamentals" class="workshop-back">â† Python Fundamentals</a><button type="button" class="workshop-theme-toggle" data-theme-toggle>◐ Theme</button><span class="workshop-language">Python Â· Workshop</span></header>
+  app.innerHTML = `<main class="workshop-page"><header class="workshop-topbar"><a href="#/" class="workshop-brand"><span class="workshop-brand-mark">${logoMark()}</span> ${brandNameMarkup()}</a><a href="#/learn/python-fundamentals" class="workshop-back">â† Python Fundamentals</a><span class="workshop-language">Python Â· Workshop</span></header>
     <div class="workshop-titlebar"><div><p class="workshop-eyebrow">GUIDED PROJECT Â· OBJECT-ORIENTED PYTHON</p><h2>${esc(workshop.title)}</h2><p>${esc(workshop.description)}</p></div><div class="workshop-overall"><div class="workshop-progress-track"><span data-workshop-progress></span></div><span data-workshop-progress-label></span></div></div>
     <div class="workshop-tabs" role="tablist" aria-label="Workshop panels"><button type="button" role="tab" aria-selected="true" data-workshop-panel="instructions">Instructions</button><button type="button" role="tab" aria-selected="false" data-workshop-panel="editor">Editor</button><button type="button" role="tab" aria-selected="false" data-workshop-panel="tests">Tests & output</button></div>
     <div class="workshop-grid"><aside class="workshop-instructions-panel" data-workshop-instructions><nav class="workshop-step-list" aria-label="Workshop steps"><span class="workshop-list-label">PROJECT STEPS</span>${workshop.steps.map((item, index) => `<button class="workshop-step-link" data-step-index="${index}" type="button"><span class="workshop-step-number">${completed().includes(item.id) ? 'âœ“' : String(index + 1).padStart(2, '0')}</span><span>${esc(item.title)}</span></button>`).join('')}</nav><div data-workshop-current>${stepMarkup()}</div></aside>

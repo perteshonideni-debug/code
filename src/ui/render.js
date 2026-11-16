@@ -2,6 +2,10 @@ import { allItems, allLessons, curriculum, featuredCourses } from '../data/curri
 import { progressStore } from '../state/store.js';
 import { mountPythonLab, pythonLabMarkup, unmountPythonLab } from './python-lab.js';
 import { authService } from '../services/auth.js';
+import { icon } from './icons.js';
+import { mountHeroSpotlight, spotlightFigureMarkup } from './hero-spotlight.js';
+import { pythonMarkMarkup } from './python-mark.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 const app = document.querySelector('#app');
 const esc = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -16,9 +20,9 @@ function header() {
   const userActions = user ? `
     <a href="#/dashboard" class="button button-quiet">Paneli Im</a>
     <div class="user-stats-pill" title="Seria dhe XP">
-      <span>🔥 <b>${stats.streak}</b></span>
-      <span>·</span>
-      <span>⚡ <b>${stats.totalXp}</b></span>
+      <span class="stat-pill-item" aria-label="Seria: ${stats.streak} ditë">${icon('flame', { size: 'sm' })}<b class="stat-pill-count">${stats.streak}</b></span>
+      <span class="stat-pill-divider" aria-hidden="true"></span>
+      <span class="stat-pill-item" aria-label="Pikët XP: ${stats.totalXp}">${icon('zap', { size: 'sm' })}<b class="stat-pill-count">${stats.totalXp}</b></span>
     </div>
     <a href="#/logout" class="button button-quiet">Dil</a>
   ` : `
@@ -26,16 +30,8 @@ function header() {
     <a class="button button-primary" href="#/courses">Fillo mësimin</a>
   `;
 
-  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">&lt;/&gt;</span>CodePath</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Kurset</a><a href="#/learn/${curriculum.id}">Mësimet</a><a href="#/workshop/email-simulator">Workshop</a>${user ? '<a href="#/dashboard">Paneli</a>' : ''}${user?.role === 'admin' ? '<a href="#/admin" class="admin-badge-nav">Admin</a>' : ''}</nav><div class="nav-actions"><button class="button button-quiet theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme">◐ Theme</button>${userActions}</div></div></header>`;
+  return `<header class="site-header"><div class="container nav"><a class="brand" href="#/"><span class="brand-mark">${logoMark()}</span>${brandNameMarkup()}</a><nav class="nav-links" aria-label="Primary"><a href="#/courses">Kurset</a><a href="#/learn/${curriculum.id}">Mësimet</a><a href="#/workshop/email-simulator">Workshop</a>${user ? '<a href="#/dashboard">Paneli</a>' : ''}${user?.role === 'admin' ? '<a href="#/admin" class="admin-badge-nav">Admin</a>' : ''}</nav><div class="nav-actions">${userActions}</div></div></header>`;
 }
-
-document.addEventListener('click', event => {
-  if (!event.target.closest('[data-theme-toggle]')) return;
-  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
-  try { localStorage.setItem('codepath-theme-v1', next); } catch { /* Theme still works for this page. */ }
-});
-try { document.documentElement.dataset.theme = localStorage.getItem('codepath-theme-v1') ?? 'light'; } catch { document.documentElement.dataset.theme = 'light'; }
 
 function courseCard(course) {
   const courseLessons = allLessons(course);
@@ -43,13 +39,62 @@ function courseCard(course) {
   return `<article class="course-card"><div class="course-icon" aria-hidden="true">${esc(course.accent)}</div><h3>${esc(course.title)}</h3><p>${esc(course.description)}</p><div class="course-facts"><span>${esc(course.level)}</span><span>${course.modules.length} modules</span><span>${courseLessons.length} lessons</span></div>${completed ? `<p class="course-progress">${completed} of ${courseLessons.length} lessons complete</p>` : ''}<div class="course-card-footer"><span>${esc(course.duration)}</span><a class="button button-secondary" href="#/learn/${course.id}">View course</a></div></article>`;
 }
 
+function moduleRows(course) {
+  return course.modules.map(module => {
+    const chapter = module.chapters[0];
+    const count = module.chapters.reduce((total, entry) => total + entry.items.length, 0);
+    return `<li class="record-module"><a href="#/chapter/${esc(chapter.id)}"><span class="record-module-title">${esc(module.title)}</span><span class="record-module-chapter">${esc(chapter.title)}</span><span class="record-module-count">${count}</span><span class="record-module-go" aria-hidden="true">${icon('chevronRight', { size: 'sm' })}</span></a></li>`;
+  }).join('');
+}
+
+/** The course record: identity, scope, action, and the syllabus one step away. */
+function courseRecord(course) {
+  const courseLessons = allLessons(course);
+  const completed = courseLessons.filter(lesson => progressStore.isComplete(lesson.id)).length;
+  return `<article class="course-record">
+      <div class="record-top">
+        <div class="record-id">
+          <span class="record-tag" aria-hidden="true">${esc(course.accent)}</span>
+          <h3>${esc(course.title)}</h3>
+          <p>${esc(course.description)}</p>
+        </div>
+        <dl class="record-facts">
+          <div><dt>Level</dt><dd>${esc(course.level)}</dd></div>
+          <div><dt>Duration</dt><dd>${esc(course.duration)}</dd></div>
+          <div><dt>Modules</dt><dd>${course.modules.length}</dd></div>
+          <div><dt>Lessons</dt><dd>${courseLessons.length}</dd></div>
+        </dl>
+      </div>
+      ${completed ? `<p class="record-progress">${completed} of ${courseLessons.length} lessons complete</p>` : ''}
+      <div class="record-actions">
+        <a class="button button-primary" href="#/learn/${esc(course.id)}">View course</a>
+        <button class="record-toggle" type="button" aria-expanded="false" aria-controls="record-modules">Show modules</button>
+      </div>
+      <ol class="record-modules" id="record-modules" hidden>${moduleRows(course)}</ol>
+    </article>`;
+}
+
 function footer() {
-  return `<footer class="footer"><div class="container footer-inner"><span>Â© 2026 CodePath</span><span>Learn with intention Â· Built for the long term</span></div></footer>`;
+  return `<footer class="footer"><div class="container footer-inner"><span>© 2026 CodePath</span><span>Learn with intention · Built for the long term</span></div></footer>`;
+}
+
+function heroSection() {
+  return `<section class="hero"><div class="container hero-grid"><div class="hero-copy-col">${pythonMarkMarkup()}<p class="eyebrow">A clearer way forward</p><h1>Learn to code with momentum.</h1><p class="hero-copy">CodePath turns intimidating concepts into practical lessons, thoughtful practice, and projects you can be proud of.</p><div class="hero-actions"><a class="button button-primary button-large" href="#/learn/${curriculum.id}">Start learning ${icon('arrowRight', { size: 'sm' })}</a><a class="button button-secondary button-large" href="#/courses">Explore courses</a></div><div class="hero-note"><span class="avatar-stack" aria-hidden="true"><span class="avatar">CP</span><span class="avatar">PY</span><span class="avatar">01</span></span><span>Learn at your own pace, one clear step at a time.</span></div></div>${spotlightFigureMarkup()}</div></section>`;
 }
 
 export function renderHome() {
   unmountPythonLab();
-  app.innerHTML = `${header()}<main><section class="hero"><div class="container"><p class="eyebrow">A clearer way forward</p><h1>Learn to code with momentum.</h1><p class="hero-copy">CodePath turns intimidating concepts into practical lessons, thoughtful practice, and projects you can be proud of.</p><div class="hero-actions"><a class="button button-primary" href="#/learn/${curriculum.id}">Start learning <span aria-hidden="true">â†’</span></a><a class="button button-secondary" href="#/courses">Explore courses</a></div><div class="hero-note"><span class="avatar-stack" aria-hidden="true"><span class="avatar">CP</span><span class="avatar">PY</span><span class="avatar">01</span></span><span>Learn at your own pace, one clear step at a time.</span></div></div></section><section class="section"><div class="container"><div class="section-heading"><h2 class="editorial">Start with a strong foundation.</h2><p>Focused courses, real examples, and a learning rhythm that helps you keep going.</p></div><div class="course-grid">${featuredCourses.map(courseCard).join('')}</div></div></section><section class="section"><div class="container"><div class="feature-grid"><article class="feature"><span>01 / Learn</span><h3>Make ideas click.</h3><p>Clear explanations connect the syntax to the problems it solves.</p></article><article class="feature"><span>02 / Practice</span><h3>Build your fluency.</h3><p>Short, deliberate exercises make the next concept feel within reach.</p></article><article class="feature"><span>03 / Grow</span><h3>See your progress.</h3><p>A calm, visible path helps you build a habit that lasts.</p></article></div></div></section></main>${footer()}`;
+  app.innerHTML = `${header()}<main>${heroSection()}<section class="section"><div class="container"><div class="section-heading"><h2 class="editorial">Start with a strong foundation.</h2><p>Focused courses, real examples, and a learning rhythm that helps you keep going.</p></div><div class="course-records">${featuredCourses.map(courseRecord).join('')}</div></div></section><section class="section"><div class="container"><div class="feature-grid"><article class="feature"><span>01 / Learn</span><h3>Make ideas click.</h3><p>Clear explanations connect the syntax to the problems it solves.</p></article><article class="feature"><span>02 / Practice</span><h3>Build your fluency.</h3><p>Short, deliberate exercises make the next concept feel within reach.</p></article><article class="feature"><span>03 / Grow</span><h3>See your progress.</h3><p>A calm, visible path helps you build a habit that lasts.</p></article></div></div></section></main>${footer()}`;
+  mountHeroSpotlight(app);
+
+  const recordToggle = app.querySelector('.record-toggle');
+  const recordModules = app.querySelector('#record-modules');
+  recordToggle?.addEventListener('click', () => {
+    const open = recordToggle.getAttribute('aria-expanded') === 'true';
+    recordToggle.setAttribute('aria-expanded', String(!open));
+    recordToggle.textContent = open ? 'Show modules' : 'Hide modules';
+    recordModules.hidden = open;
+  });
 }
 
 export function renderCatalogue() {

@@ -2,6 +2,8 @@ import { authService } from '../services/auth.js';
 import { chapterFlows } from '../data/chapter-flows.js';
 import { emailSimulator } from '../data/workshops/email-simulator.js';
 import { curriculum } from '../data/curriculum.js';
+import { icon } from './icons.js';
+import { brandNameMarkup, logoMark } from './logo.js';
 
 const app = document.querySelector('#app');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -11,7 +13,7 @@ function adminHeader(user) {
     <header class="site-header">
       <div class="container nav">
         <a class="brand" href="#/">
-          <span class="brand-mark">&lt;/&gt;</span>CodePath <span class="badge-admin-label">Admin Console</span>
+          <span class="brand-mark">${logoMark()}</span>${brandNameMarkup()} <span class="badge-admin-label">Admin Console</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
           <a href="#/admin" class="active">Përmbajtja</a>
@@ -20,7 +22,6 @@ function adminHeader(user) {
         </nav>
         <div class="nav-actions">
           <span class="badge-role">Admin: ${esc(user?.fullName || 'Admin')}</span>
-          <button class="button button-quiet theme-toggle" type="button" data-theme-toggle>◐ Theme</button>
           <a href="#/dashboard" class="button button-secondary">Kthehu te Paneli</a>
         </div>
       </div>
@@ -40,7 +41,7 @@ export function renderAdmin() {
     app.innerHTML = `
       <header class="site-header">
         <div class="container nav">
-          <a class="brand" href="#/"><span class="brand-mark">&lt;/&gt;</span>CodePath</a>
+          <a class="brand" href="#/"><span class="brand-mark">${logoMark()}</span>${brandNameMarkup()}</a>
           <div class="nav-actions"><a href="#/dashboard" class="button button-secondary">Paneli Im</a></div>
         </div>
       </header>
@@ -51,7 +52,7 @@ export function renderAdmin() {
           <p class="hero-copy">Zona e administrimit është e rezervuar për instruktorët dhe stafin arsimor të CodePath.</p>
           <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
             <button type="button" class="button button-primary" id="activate-admin-btn">
-              ⚡ Aktivizo Rolin Admin për Testim
+              ${icon('zap', { size: 'sm' })}Aktivizo rolin admin për testim
             </button>
             <a href="#/dashboard" class="button button-secondary">Kthehu te Paneli</a>
           </div>
